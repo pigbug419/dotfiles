@@ -24,7 +24,7 @@ HYPHEN_INSENSITIVE="true"
 DISABLE_UPDATE_PROMPT="true"
 
 # Oh-my-zsh plugins
-plugins=(git fast-syntax-highlighting zsh-autosuggestions)
+plugins=(git vi-mode fast-syntax-highlighting zsh-autosuggestions)
 
 # Configure oh-my-zsh
 source $ZSH/oh-my-zsh.sh
