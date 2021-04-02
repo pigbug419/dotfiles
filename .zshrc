@@ -64,6 +64,10 @@ POWERLEVEL9K_SHORTEN_DELIMITER=".."
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(os_icon host dir vcs)
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status virtualenv anaconda time)
 
+if [ -z "$SSH_AUTH_SOCK" ] ; then
+  eval `ssh-agent -s`
+fi
+
 #-------------------------------------------------------------------
 # Language-specific
 #-------------------------------------------------------------------
@@ -95,6 +99,9 @@ export PATH="$HOME/.local/src/node/bin:$PATH"
 #-------------------------------------------------------------------
 # Aliases
 #-------------------------------------------------------------------
+alias vi='nvim'
+alias rm='rm -i'
+
 # git
 alias gcm='git commit -m'
 
@@ -126,17 +133,11 @@ export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 
 # nvim as editor
 export EDITOR="nvim"
+export KEYTIMEOUT=15
 
 # nvim as manpage viewer
 export MANPAGER="nvim +Man!"
 export MANWIDTH=999
-
-# For xdg-open
-export BROWSER="naver-whale-stable"
-
-# nvim-remote
-export NVIM_LISTEN_ADDRESS="$HOME/.local/nvimsocket"
-alias nvim="nvim --listen $NVIM_LISTEN_ADDRESS"
 
 #-------------------------------------------------------------------
 # Machine-specific

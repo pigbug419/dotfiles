@@ -1,6 +1,6 @@
 [user]
-  email = jaywonchung@snu.ac.kr
-  name = Jae-Won Chung
+  email = hhm8247@gmail.com
+  name = Hyeonmin Ha
 [alias]
   last = log -1 HEAD
   unstage = reset HEAD --
