@@ -59,10 +59,10 @@ bindkey '^[#' pound-insert  # alt-#
 
 # Powerlevel9k options override p10k
 POWERLEVEL9K_SHORTEN_DIR_LENGTH=2
-POWERLEVEL9K_SHORTEN_STRATEGY="Default"
+#POWERLEVEL9K_SHORTEN_STRATEGY="Default"
 POWERLEVEL9K_SHORTEN_DELIMITER=".."
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(os_icon host dir vcs)
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status virtualenv anaconda time)
+#POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(os_icon host dir vcs)
+#POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status virtualenv anaconda time)
 
 if [ -z "$SSH_AUTH_SOCK" ] ; then
   eval `ssh-agent -s`
