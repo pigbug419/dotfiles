@@ -90,11 +90,10 @@ export PATH="$HOME/.dotmodules/bin:$PATH"
     source "$HOME/.autojump/etc/profile.d/autojump.sh"
 autoload -U compinit && compinit -u
 
-# direnv
-eval "$(direnv hook zsh)"
-
-# node
-export PATH="$HOME/.local/src/node/bin:$PATH"
+# pyenv
+export PATH="$HOME/.pyenv/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
 
 #-------------------------------------------------------------------
 # Aliases
@@ -143,3 +142,4 @@ export MANWIDTH=999
 # Machine-specific
 #-------------------------------------------------------------------
 source "$HOME/.dotmodules/zshrc/machine-specific.sh"
+
