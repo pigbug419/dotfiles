@@ -64,9 +64,9 @@ POWERLEVEL9K_SHORTEN_DELIMITER=".."
 #POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(os_icon host dir vcs)
 #POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status virtualenv anaconda time)
 
-if [ -z "$SSH_AUTH_SOCK" ] ; then
-  eval `ssh-agent -s`
-fi
+#if [ -z "$SSH_AUTH_SOCK" ] ; then
+#  eval `ssh-agent -s`
+#fi
 
 #-------------------------------------------------------------------
 # Language-specific
