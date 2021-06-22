@@ -543,9 +543,7 @@ nnoremap <silent> ga :Telescope lsp_code_actions<CR>
 
 lua << END
 local lspconfig = require'lspconfig'
-local on_attach = function(client)
-  require'completion'.on_attach(client)
-end
+local on_attach = require'completion'.on_attach
 
 if vim.fn.executable('ccls') == 1 then
   lspconfig.ccls.setup{
@@ -567,6 +565,7 @@ if vim.fn.executable('pyright') == 1 then
           typeCheckingMode = "off",
           autoSearchPaths = true,
           useLibraryCodeForTypes = true,
+          stubPath = "./.typings",
         }
       }
     }
