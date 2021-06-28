@@ -64,9 +64,9 @@ POWERLEVEL9K_SHORTEN_DELIMITER=".."
 #POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(os_icon host dir vcs)
 #POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status virtualenv anaconda time)
 
-#if [ -z "$SSH_AUTH_SOCK" ] ; then
-#  eval `ssh-agent -s`
-#fi
+if [ -z "$SSH_AUTH_SOCK" ] ; then
+  eval `ssh-agent -s`
+fi
 
 #-------------------------------------------------------------------
 # Language-specific
@@ -123,6 +123,17 @@ alias cp='cp -i'
 
 # mkdir then cd
 alias mkcd='mkdir -p $1 && cd $1'
+
+# Set ssh-agent envs for the current tmux window.
+if [ -n "$TMUX" ]; then
+  function set-ssh-env {
+    export "$(tmux show-environment | grep "^SSH_AUTH_SOCK")"
+    export "$(tmux show-environment | grep "^SSH_AGENT_PID")"
+    export "$(tmux show-environment | grep "^SSH_CONNECTION")"
+  }
+else
+  function set-ssh-env { }
+fi
 
 #-------------------------------------------------------------------
 # Environment variables
