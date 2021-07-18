@@ -574,30 +574,30 @@ if vim.fn.executable('pyright') == 1 then
   vim.cmd('autocmd FileType python setlocal signcolumn=yes')
 end
 
-if vim.fn.executable('pyls') == 0 then
-  lspconfig.pyls.setup{
-    on_attach = on_attach,
-    settings = {
-      pyls = {plugins = {pycodestyle = {ignore = {"E501"}}}}
-    }
-  }
-  vim.cmd('autocmd FileType python setlocal omnifunc=v:lua.vim.lsp.omnifunc')
-  vim.cmd('autocmd FileType python setlocal signcolumn=yes')
-end
-
-if vim.fn.executable('dotnet') == 0 then
-  lspconfig.pyls_ms.setup{
-    on_attach = on_attach,
-    cmd = {
-      "dotnet",
-      "exec",
-      -- NOTE: linked with path and mspyls.sh
-      vim.fn.expand("~") .. "/.local/src/python-language-server/output/bin/Debug/Microsoft.Python.LanguageServer.dll"
-    },
-  }
-  vim.cmd('autocmd FileType python setlocal omnifunc=v:lua.vim.lsp.omnifunc')
-  vim.cmd('autocmd FileType python setlocal signcolumn=yes')
-end
+-- if vim.fn.executable('pyls') == 1 then
+--   lspconfig.pyls.setup{
+--     on_attach = on_attach,
+--     settings = {
+--       pyls = {plugins = {pycodestyle = {ignore = {"E501"}}}}
+--     }
+--   }
+--   vim.cmd('autocmd FileType python setlocal omnifunc=v:lua.vim.lsp.omnifunc')
+--   vim.cmd('autocmd FileType python setlocal signcolumn=yes')
+-- end
+-- 
+-- if vim.fn.executable('dotnet') == 1 then
+--   lspconfig.pyls_ms.setup{
+--     on_attach = on_attach,
+--     cmd = {
+--       "dotnet",
+--       "exec",
+--       -- NOTE: linked with path and mspyls.sh
+--       vim.fn.expand("~") .. "/.local/src/python-language-server/output/bin/Debug/Microsoft.Python.LanguageServer.dll"
+--     },
+--   }
+--   vim.cmd('autocmd FileType python setlocal omnifunc=v:lua.vim.lsp.omnifunc')
+--   vim.cmd('autocmd FileType python setlocal signcolumn=yes')
+-- end
 
 if vim.fn.executable('rust-analyzer') == 1 then
   lspconfig.rust_analyzer.setup{
