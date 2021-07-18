@@ -39,5 +39,5 @@ python3 install.py
 popd
 rm -rf ~/_autojump
 
-installing "direnv"
-curl -sfL https://direnv.net/install.sh | bin_path=~/.local/bin bash
+#installing "direnv"
+#curl -sfL https://direnv.net/install.sh | bin_path=~/.local/bin bash
