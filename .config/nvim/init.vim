@@ -626,6 +626,7 @@ imap <S-Tab> <Plug>(completion_smart_s_tab)
 
 set completeopt=menuone,noinsert,noselect
 set shortmess+=c
+let g:completion_trigger_keyword_length = 3
 
 " lsp_extensions.nvim
 autocmd InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *.rs
