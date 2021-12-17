@@ -13,6 +13,8 @@ set shiftwidth=2                " Width of >> and <<
 set expandtab                   " <Tab> to spaces, <C-v><Tab> for real tab
 set smarttab                    " <Tab> at line start obeys shiftwidth
 set backspace=eol,start,indent  " Backspace same as other programs
+set list!                       " Show invisible characters (usually whitespace)
+set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
 " command mode
 set wildmenu                    " Command mode autocompletion list
 set wildmode=longest:full,full  " <Tab> spawns wildmenu, then <Tab> to cycle list
@@ -20,6 +22,7 @@ set ignorecase                  " Case-insensitive search
 set smartcase                   " ... except when uppercase characters are typed
 set incsearch                   " Search as I type
 " file
+set hidden                      " Allow switching to other buffers without saving
 set autoread                    " Auto load when current file is edited somewhere
 " performance
 set lazyredraw                  " Screen not updated during macros, etc
@@ -93,9 +96,7 @@ inoremap <C-c> <ESC>
 vnoremap <C-c> <ESC>
 
 " Closing brackets
-inoremap (<CR> (<CR>)<ESC>O
 inoremap {<CR> {<CR>}<ESC>O
-inoremap ({<CR> (<bar><bar><space>{<CR>})<ESC>O<ESC>k$hhi
 
 " Surrounding with brackets
 nnoremap (<CR> i(<CR><ESC>o)<ESC>k^
@@ -221,14 +222,17 @@ Plug 'vim-airline/vim-airline'
 " Plug 'sainnhe/sonokai'
 Plug 'sainnhe/gruvbox-material'
 " Plug 'gruvbox-community/gruvbox'
+Plug 'andreypopp/vim-colors-plain'
 " git integration
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 " navigation
 Plug 'majutsushi/tagbar'
 Plug 'scrooloose/nerdtree', {'on': ['NERDTreeToggle', 'NERDTreeFind']}
-Plug 'junegunn/fzf', {'do': { -> fzf#install()}}
-Plug 'junegunn/fzf.vim'
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-lua/telescope.nvim'
+Plug 'nvim-telescope/telescope-fzy-native.nvim'
 Plug 'airblade/vim-rooter'
 Plug 'justinmk/vim-sneak'
 Plug 'christoomey/vim-tmux-navigator'
@@ -236,12 +240,12 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
 Plug 'nvim-lua/lsp_extensions.nvim'
-Plug 'ojroques/nvim-lspfuzzy'
 " syntactic language support
 Plug 'rust-lang/rust.vim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 call plug#end()
 
+let g:EditorConfig_verbose = 1
 
 " =============================================================================
 " vim-argwrap
@@ -261,7 +265,7 @@ let g:goyo_height = '90%'
 " =============================================================================
 " oscyank
 " =============================================================================
-vnoremap <silent> <Leader>c :OSCYank<CR>
+vnoremap <silent> <Leader>y :OSCYank<CR>
 
 
 " =============================================================================
@@ -330,41 +334,64 @@ endfunction
 " 24-bit RGB colors
 set termguicolors
 
-" Colorscheme-specific configs
-let g:sonokai_style = 'default'
-let g:gruvbox_material_enable_italic = 0
-let g:gruvbox_material_disable_italic_comment = 1
-let g:gruvbox_material_palette = 'original'
-let g:gruvbox_material_transparent_background = 1
-let g:gruvbox_material_statusline_style = 'original'
+" One function for one colorscheme
+" I could reuse some parts, but I cannot care less.
+function! GruvboxMaterial()
+  let g:gruvbox_material_enable_italic = 0
+  let g:gruvbox_material_disable_italic_comment = 1
+  let g:gruvbox_material_palette = 'original'
+  let g:gruvbox_material_transparent_background = 1
+  let g:gruvbox_material_statusline_style = 'original'
 
-colorscheme gruvbox-material
+  colorscheme gruvbox-material
 
-let g:airline_theme = 'gruvbox_material'
+  let g:airline_theme = 'gruvbox_material'
 
-" Transparent tabline
-highlight! TabLineFill NONE
+  " Transparent tabline
+  highlight! TabLineFill NONE
 
-" Search matches (from gruvbox-community)
-highlight! Search    cterm=reverse ctermfg=214 ctermbg=235 gui=reverse guifg=#fabd2f guibg=#282828
-highlight! IncSearch cterm=reverse ctermfg=208 ctermbg=235 gui=reverse guifg=#fe8019 guibg=#282828
+  " Search matches (from gruvbox-community)
+  highlight! Search     cterm=reverse ctermfg=214 ctermbg=235 gui=reverse guifg=#fabd2f guibg=#282828
+  highlight! IncSearch  cterm=reverse ctermfg=208 ctermbg=235 gui=reverse guifg=#fe8019 guibg=#282828
 
-" Vimdiff (from gruvbox-community)
-highlight! DiffText   cterm=reverse ctermfg=214 ctermbg=235 gui=reverse guifg=#fabd2f guibg=#282828
-highlight! DiffAdd    cterm=reverse ctermfg=142 ctermbg=235 gui=reverse guifg=#b8bb26 guibg=#282828
-highlight! DiffDelete cterm=reverse ctermfg=167 ctermbg=235 gui=reverse guifg=#fb4934 guibg=#282828
+  " Vimdiff (from gruvbox-community)
+  highlight! DiffText   cterm=reverse ctermfg=214 ctermbg=235 gui=reverse guifg=#fabd2f guibg=#282828
+  highlight! DiffAdd    cterm=reverse ctermfg=142 ctermbg=235 gui=reverse guifg=#b8bb26 guibg=#282828
+  highlight! DiffDelete cterm=reverse ctermfg=167 ctermbg=235 gui=reverse guifg=#fb4934 guibg=#282828
 
-" Current line number (fg from Yellow, bg from CursorLine)
-call CopyFrom('CursorLineNr', 'Yellow',     'ctermfg', 1)
-call CopyFrom('CursorLineNr', 'CursorLine', 'ctermbg', 0)
-call CopyFrom('CursorLineNr', 'Yellow',     'guifg',   0)
-call CopyFrom('CursorLineNr', 'CursorLine', 'guibg',   0)
+  " Current line number (fg from Yellow, bg from CursorLine)
+  call CopyFrom('CursorLineNr', 'Yellow',     'ctermfg', 1)
+  call CopyFrom('CursorLineNr', 'CursorLine', 'ctermbg', 0)
+  call CopyFrom('CursorLineNr', 'Yellow',     'guifg',   0)
+  call CopyFrom('CursorLineNr', 'CursorLine', 'guibg',   0)
+endfunction
 
-" Transparency fix for terminal emulators (Not needed for gruvbox_material)
-" highlight! Normal ctermbg=NONE guibg=NONE 
-" highlight! SignColumn ctermbg=NONE guibg=NONE
-" highlight! EndOfBuffer ctermbg=NONE guibg=NONE
-" highlight! NonText ctermbg=NONE ctermfg=NONE guibg=NONE guifg=NONE
+function! Plain()
+  colorscheme plain
+
+  hi! link LspDiagnosticsDefaultError Constant
+  hi! link LspDiagnosticsDefaultWarning Constant
+  hi! link LspDiagnosticsDefaultInformation Constant
+  hi! link LspDiagnosticsDefaultHint Constant
+
+  let g:airline_theme = 'gruvbox_material'
+
+  " Search matches (from gruvbox-community)
+  highlight! Search     cterm=reverse ctermfg=214 ctermbg=235 gui=reverse guifg=#fabd2f guibg=#282828
+  highlight! IncSearch  cterm=reverse ctermfg=208 ctermbg=235 gui=reverse guifg=#fe8019 guibg=#282828
+
+  " Vimdiff (from gruvbox-community)
+  highlight! DiffText   cterm=reverse ctermfg=214 ctermbg=235 gui=reverse guifg=#fabd2f guibg=#282828
+  highlight! DiffAdd    cterm=reverse ctermfg=142 ctermbg=235 gui=reverse guifg=#b8bb26 guibg=#282828
+  highlight! DiffDelete cterm=reverse ctermfg=167 ctermbg=235 gui=reverse guifg=#fb4934 guibg=#282828
+
+  " Sneak (from gruvbox-material)
+  highlight! link Sneak Search
+  highlight! link SneakLabel Search
+  highlight! link SneakScope DiffText
+endfunction
+
+call Plain()
 
 
 " =============================================================================
@@ -409,13 +436,8 @@ endfunction
 nnoremap <silent> <Leader>n :call NERDTreeToggleNoFocus()<CR>
 
 " Open NERDTree on startup
-function! NERDTreeStartup()
-  if (&diff == 0 && &columns > 125)
-    call NERDTreeToggleNoFocus()
-  endif
-endfunction
-if argc() > 0 
-  autocmd VimEnter * silent call NERDTreeStartup()
+if argc() > 0 && &diff == 0 && &columns > 125
+  autocmd VimEnter * silent call NERDTreeToggleNoFocus()
 endif
 
 " Quit NERDTree when its the only window open
@@ -430,54 +452,66 @@ autocmd BufEnter * silent call NERDTreeAutoQuit()
 let NERDTreeMapOpenInTab='<C-g>'
 let NERDTreeMapOpenSplit='<C-s>'
 let NERDTreeMapOpenVSplit='<C-v>'
-
-" For systems without pretty arrows
-" let g:NERDTreeDirArrowExpandable = '>'
-" let g:NERDTreeDirArrowCollapsible = 'v'
+let NERDTreeCustomOpenArgs={'file':{'reuse':'currenttab','where':'p','keepopen':1,'stay':0}}
 
 
 " =============================================================================
-" fzf
+" Telescope.nvim
 " =============================================================================
-" Open fzf window
-nnoremap <leader>f :Files<CR>
-if executable('ag')
-  nnoremap <Leader>ag :Ag<CR>
-endif
+" Mappings. live_grep uses rg by default.
+nnoremap <Leader>f  :Telescope find_files<CR>
+nnoremap <Leader>b  :Telescope buffers<CR>
+nnoremap <Leader>gr :lua require'telescope.builtin'.grep_string{word_match = "-w", only_sort_text = true, search = ''}<CR>
+nnoremap <Leader>gs :lua require'telescope.builtin'.grep_string{search = vim.fn.input("Grep for > ")}<CR>
+nnoremap <Leader>gc :Telescope git_bcommits<CR>
 
-" fzf command
-if executable('ag')
-  let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
-else
-  let $FZF_DEFAULT_COMMAND = 'find . -type f -not -path "*/.git/*"'
-endif
+lua << END
+local action_state = require('telescope.actions.state')
+function preview_scroll_up_one(prompt_bufnr)
+  action_state.get_current_picker(prompt_bufnr).previewer:scroll_fn(-1)
+end
+function preview_scroll_down_one(prompt_bufnr)
+  action_state.get_current_picker(prompt_bufnr).previewer:scroll_fn(1)
+end
 
-" Key bindings to be pressed on fzf list
-let g:fzf_action =
-  \ { 'ctrl-g': 'tab split',
-  \   'ctrl-s': 'split',
-  \   'ctrl-v': 'vsplit' }
+local actions = require'telescope.actions'
+require'telescope'.setup{
+  defaults = {
+    prompt_prefix = '',
+    mappings = {
+      n = {
+        ["H"]     = false,
+        ["L"]     = false,
+        ["<C-c>"] = actions.close,
+        ["<C-y>"] = preview_scroll_up_one,
+        ["<C-e>"] = preview_scroll_down_one,
+      },
+      i = {
+        ["<C-c>"] = actions.close,
+        ["<C-g>"] = actions.file_tab,
+        ["<C-y>"] = preview_scroll_up_one,
+        ["<C-e>"] = preview_scroll_down_one,
+        ["<C-v>"] = actions.select_vertical,
+        ["<C-s>"] = actions.select_horizontal,
+      }
+    }
+  },
+  extensions = {
+    fzy_native = {
+      override_generic_sorter = true,
+      --override_file_sorter = true,
+    }
+  }
+}
 
-" Match fzf colors with current color scheme
-let g:fzf_colors =
-  \ { 'fg':      ['fg', 'Normal'],
-    \ 'bg':      ['bg', 'Normal'],
-    \ 'hl':      ['fg', 'Comment'],
-    \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-    \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-    \ 'hl+':     ['fg', 'Statement'],
-    \ 'info':    ['fg', 'PreProc'],
-    \ 'border':  ['fg', 'Ignore'],
-    \ 'prompt':  ['fg', 'Conditional'],
-    \ 'pointer': ['fg', 'Exception'],
-    \ 'marker':  ['fg', 'Keyword'],
-    \ 'spinner': ['fg', 'Label'],
-    \ 'header':  ['fg', 'Comment'] }
+require'telescope'.load_extension('fzy_native')
+END
 
-" Show in floating window
-let g:fzf_layout = 
-  \ { 'up':     '~90%',
-    \ 'window': { 'width': 0.8, 'height': 0.8, 'yoffset': 0.5, 'xoffset': 0.5, 'border': 'sharp' }}
+
+" =============================================================================
+" vim-rooter
+" =============================================================================
+let g:rooter_patterns = ['.git']
 
 
 " =============================================================================
@@ -498,56 +532,72 @@ map T <Plug>Sneak_T
 " key bindings
 nnoremap <F2>        :lua vim.lsp.buf.rename()<CR>
 nnoremap <silent> K  :lua vim.lsp.buf.hover()<CR>
-nnoremap <silent> gd :lua vim.lsp.buf.definition()<CR>
-nnoremap <silent> gr :lua vim.lsp.buf.references()<CR>
+nnoremap <silent> gd :Telescope lsp_definitions<CR>
+nnoremap <silent> gr :Telescope lsp_references<CR>
 nnoremap <silent> gi :lua vim.lsp.buf.implementation()<CR>
-nnoremap <silent> gw :lua vim.lsp.buf.workspace_symbol()<CR>
+nnoremap <silent> gw :Telescope lsp_workspace_symbols<CR>
 nnoremap <silent> gD :lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
 nnoremap <silent> gn :lua vim.lsp.diagnostic.goto_next()<CR>
 nnoremap <silent> gp :lua vim.lsp.diagnostic.goto_prev()<CR>
+nnoremap <silent> ga :Telescope lsp_code_actions<CR>
 
 lua << END
 local lspconfig = require'lspconfig'
-local on_attach = function(client)
-  require'completion'.on_attach(client)
-end
+local on_attach = require'completion'.on_attach
 
 if vim.fn.executable('ccls') == 1 then
   lspconfig.ccls.setup{
     on_attach = on_attach,
     init_options = {
-      client = {snippetSupport = false},
-      highlight = {lsRanges = true}
+      client = { snippetSupport = false }
     }
   }
   vim.cmd('autocmd FileType c,cpp setlocal omnifunc=v:lua.vim.lsp.omnifunc')
   vim.cmd('autocmd FileType c,cpp setlocal signcolumn=yes')
 end
 
-if vim.fn.executable('pyls') == 1 then
-  lspconfig.pyls.setup{
+if vim.fn.executable('pyright') == 1 then
+  lspconfig.pyright.setup{
     on_attach = on_attach,
     settings = {
-      pyls = {plugins = {pycodestyle = {ignore = {"E501"}}}}
+      python = {
+        analysis = {
+          typeCheckingMode = "off",
+          autoSearchPaths = true,
+          useLibraryCodeForTypes = true,
+          stubPath = "./.typings",
+        }
+      }
     }
   }
   vim.cmd('autocmd FileType python setlocal omnifunc=v:lua.vim.lsp.omnifunc')
   vim.cmd('autocmd FileType python setlocal signcolumn=yes')
 end
 
-if vim.fn.executable('dotnet') == 1 then
-  lspconfig.pyls_ms.setup{
-    on_attach = on_attach,
-    cmd = {
-      "dotnet",
-      "exec",
-      -- NOTE: linked with path and mspyls.sh
-      vim.fn.expand("~") .. "/.local/src/python-language-server/output/bin/Debug/Microsoft.Python.LanguageServer.dll"
-    }
-  }
-  vim.cmd('autocmd FileType python setlocal omnifunc=v:lua.vim.lsp.omnifunc')
-  vim.cmd('autocmd FileType python setlocal signcolumn=yes')
-end
+-- if vim.fn.executable('pyls') == 1 then
+--   lspconfig.pyls.setup{
+--     on_attach = on_attach,
+--     settings = {
+--       pyls = {plugins = {pycodestyle = {ignore = {"E501"}}}}
+--     }
+--   }
+--   vim.cmd('autocmd FileType python setlocal omnifunc=v:lua.vim.lsp.omnifunc')
+--   vim.cmd('autocmd FileType python setlocal signcolumn=yes')
+-- end
+-- 
+-- if vim.fn.executable('dotnet') == 1 then
+--   lspconfig.pyls_ms.setup{
+--     on_attach = on_attach,
+--     cmd = {
+--       "dotnet",
+--       "exec",
+--       -- NOTE: linked with path and mspyls.sh
+--       vim.fn.expand("~") .. "/.local/src/python-language-server/output/bin/Debug/Microsoft.Python.LanguageServer.dll"
+--     },
+--   }
+--   vim.cmd('autocmd FileType python setlocal omnifunc=v:lua.vim.lsp.omnifunc')
+--   vim.cmd('autocmd FileType python setlocal signcolumn=yes')
+-- end
 
 if vim.fn.executable('rust-analyzer') == 1 then
   lspconfig.rust_analyzer.setup{
@@ -565,12 +615,9 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
       spacing = 4,
     },
     -- Do not update in insert mode
-    update_in_insert = false,
+    update_in_insert = true,
   }
 )
-
--- Configs for lspfuzzy
-require'lspfuzzy'.setup{}
 END
 
 " Use tab to bring up and traverse completion list
@@ -579,9 +626,11 @@ imap <S-Tab> <Plug>(completion_smart_s_tab)
 
 set completeopt=menuone,noinsert,noselect
 set shortmess+=c
+let g:completion_trigger_keyword_length = 3
 
 " lsp_extensions.nvim
-autocmd InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *.rs :lua require'lsp_extensions'.inlay_hints{ prefix = '  » '}
+autocmd InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *.rs
+  \ :lua require'lsp_extensions'.inlay_hints{ prefix = '  » '}
 
 
 " =============================================================================

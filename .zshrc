@@ -13,11 +13,10 @@ fi
 #-------------------------------------------------------------------
 # NOTE: linked to nvim floaterm config g:floaterm_shell
 # NOTE: linked to xmonad named scratchpad command
-if [ ! "$WELCOME" = "no" ]; then
-  fortune
-  echo
-  cal -3
-fi
+#if [ ! "$WELCOME" = "no" ]; then
+#  echo
+#  cal -3
+#fi
 
 #-------------------------------------------------------------------
 # Zsh and oh-my-zsh configs
@@ -62,10 +61,10 @@ export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=242'
 
 # Powerlevel9k options override p10k
 POWERLEVEL9K_SHORTEN_DIR_LENGTH=2
-POWERLEVEL9K_SHORTEN_STRATEGY="Default"
+# POWERLEVEL9K_SHORTEN_STRATEGY="Default"
 POWERLEVEL9K_SHORTEN_DELIMITER=".."
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(os_icon host dir vcs)
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status virtualenv anaconda time)
+# POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(os_icon host dir vcs)
+# POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status virtualenv anaconda time)
 
 #-------------------------------------------------------------------
 # Language-specific
@@ -85,12 +84,8 @@ export PATH="$HOME/.dotmodules/bin:$PATH"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # autojump
-[[ -s "$HOME/.autojump/etc/profile.d/autojump.sh" ]] &&
-    source "$HOME/.autojump/etc/profile.d/autojump.sh"
+[ -f $(brew --prefix)/etc/profile.d/autojump.sh ] && . $(brew --prefix)/etc/profile.d/autojump.sh
 autoload -U compinit && compinit -u
-
-# direnv
-eval "$(direnv hook zsh)"
 
 #-------------------------------------------------------------------
 # Aliases
@@ -111,6 +106,8 @@ alias ddf='dotfiles difftool'
 
 # nvim
 alias nconf="nvim $HOME/.config/nvim/init.vim"
+
+alias vi="nvim"
 
 #-------------------------------------------------------------------
 # Environment variables
