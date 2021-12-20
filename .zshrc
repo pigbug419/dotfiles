@@ -108,6 +108,7 @@ alias ddf='dotfiles difftool'
 alias nconf="nvim $HOME/.config/nvim/init.vim"
 
 alias vi="nvim"
+alias mosh='mosh --server=/home/ha/.local/bin/mosh-server'
 
 #-------------------------------------------------------------------
 # Environment variables
