@@ -91,9 +91,9 @@ export PATH="$HOME/.dotmodules/bin:$PATH"
 autoload -U compinit && compinit -u
 
 # pyenv
-export PATH="$HOME/.pyenv/bin:$PATH"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
+#export PATH="$HOME/.pyenv/bin:$PATH"
+#eval "$(pyenv init -)"
+#eval "$(pyenv virtualenv-init -)"
 
 #-------------------------------------------------------------------
 # Aliases
