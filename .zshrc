@@ -71,7 +71,7 @@ fi
 #-------------------------------------------------------------------
 # Language-specific
 #-------------------------------------------------------------------
-source "$HOME/.dotmodules/zshrc/python-env.sh"
+#source "$HOME/.dotmodules/zshrc/python-env.sh"
 
 #-------------------------------------------------------------------
 # Command-line tools
@@ -152,5 +152,5 @@ export MANWIDTH=999
 #-------------------------------------------------------------------
 # Machine-specific
 #-------------------------------------------------------------------
-source "$HOME/.dotmodules/zshrc/machine-specific.sh"
+# source "$HOME/.dotmodules/zshrc/machine-specific.sh"
 
